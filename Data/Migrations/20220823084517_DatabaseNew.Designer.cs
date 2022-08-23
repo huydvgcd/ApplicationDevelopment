@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApplicationDevelopment.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220823032442_addNewModel2")]
-    partial class addNewModel2
+    [Migration("20220823084517_DatabaseNew")]
+    partial class DatabaseNew
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -94,30 +94,39 @@ namespace ApplicationDevelopment.Data.Migrations
 
             modelBuilder.Entity("ApplicationDevelopment.Models.Book", b =>
                 {
-                    b.Property<string>("Isbn")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Author")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Category")
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImgUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("StoreId")
+                    b.Property<int>("Price")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProfilePicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Quantity")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Isbn");
+                    b.HasKey("Id");
 
-                    b.HasIndex("StoreId");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Book");
                 });
@@ -127,14 +136,35 @@ namespace ApplicationDevelopment.Data.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("BookId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("BookId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "BookId");
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Cart");
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("ApplicationDevelopment.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("ApplicationDevelopment.Models.Orders", b =>
@@ -146,9 +176,6 @@ namespace ApplicationDevelopment.Data.Migrations
 
                     b.Property<DateTime>("OrderTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -162,8 +189,8 @@ namespace ApplicationDevelopment.Data.Migrations
 
             modelBuilder.Entity("ApplicationDevelopment.Models.OrdersDetail", b =>
                 {
-                    b.Property<string>("BookId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("BookId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
@@ -176,24 +203,6 @@ namespace ApplicationDevelopment.Data.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("Orders Detail");
-                });
-
-            modelBuilder.Entity("ApplicationDevelopment.Models.Store", b =>
-                {
-                    b.Property<int>("StoreId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("StoreId");
-
-                    b.ToTable("Store");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -333,9 +342,11 @@ namespace ApplicationDevelopment.Data.Migrations
 
             modelBuilder.Entity("ApplicationDevelopment.Models.Book", b =>
                 {
-                    b.HasOne("ApplicationDevelopment.Models.Store", "Store")
-                        .WithMany()
-                        .HasForeignKey("StoreId");
+                    b.HasOne("ApplicationDevelopment.Models.Category", "Category")
+                        .WithMany("Books")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ApplicationDevelopment.Models.Cart", b =>

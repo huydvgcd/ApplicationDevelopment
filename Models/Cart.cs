@@ -10,8 +10,8 @@ namespace ApplicationDevelopment.Models
         public ApplicationUser AppUser { set; get; }
 
 
-        [Display(Name = "BOOKID")]
-        public string? BookId { set; get; }
+        [Display(Name = "Book Id")]
+        public int? BookId { set; get; }
 
 
         [ForeignKey("BookId")]

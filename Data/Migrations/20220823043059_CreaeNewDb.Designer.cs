@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApplicationDevelopment.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220823040405_configNEwDb")]
-    partial class configNEwDb
+    [Migration("20220823043059_CreaeNewDb")]
+    partial class CreaeNewDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -94,8 +94,10 @@ namespace ApplicationDevelopment.Data.Migrations
 
             modelBuilder.Entity("ApplicationDevelopment.Models.Book", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Author")
                         .HasColumnType("nvarchar(max)");
@@ -124,8 +126,8 @@ namespace ApplicationDevelopment.Data.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("BookId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("BookId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "BookId");
 
@@ -141,8 +143,8 @@ namespace ApplicationDevelopment.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CategoryName")
-                        .HasColumnType("int");
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
@@ -177,8 +179,8 @@ namespace ApplicationDevelopment.Data.Migrations
 
             modelBuilder.Entity("ApplicationDevelopment.Models.OrdersDetail", b =>
                 {
-                    b.Property<string>("BookId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("BookId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");

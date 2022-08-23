@@ -9,13 +9,13 @@ namespace ApplicationDevelopment.Models
     public class Book
     {
         [Key]
-        [Required]
         [Display(Name = "Key Book")]
-        public string Id { set; get; }
+        public int Id { set; get; }
 
-       
-        [ForeignKey("CategoryId")]
-        public Category Category{ set; get; }
+
+        [ForeignKey("Category")]
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
 
 
         [Display(Name = "Book title")]
@@ -23,7 +23,7 @@ namespace ApplicationDevelopment.Models
 
 
         [Display(Name = "Book price")]
-        public Decimal Price { set; get; }
+        public int Price { set; get; }
 
 
         [Display(Name = "Book image")]
@@ -31,5 +31,16 @@ namespace ApplicationDevelopment.Models
 
         [Display(Name = "Book Author")]
         public string Author { set; get; }
+
+        [Display(Name = "Book Description")]
+        public string Description { set; get; }
+
+        [Display(Name = "Book Quantity")]
+        public string Quantity { set; get; }
+
+        [Required(ErrorMessage = "Please choose profile image")]
+        [Display(Name = "Profile Picture")]
+        public string ProfilePicture { get; set; }
+
     }
 }

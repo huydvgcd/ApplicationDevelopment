@@ -15,7 +15,7 @@ namespace ApplicationDevelopment.Models
         public Orders Orders { set; get; }
 
         [Display(Name = "Book Id")]
-        public string? BookId { set; get; }
+        public int? BookId { set; get; }
 
         [ForeignKey("BookId")]
         public Book Book { set; get; }

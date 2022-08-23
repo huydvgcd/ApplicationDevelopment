@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ApplicationDevelopment.Data.Migrations
 {
-    public partial class configNEwDb : Migration
+    public partial class CreaeNewDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,10 +18,6 @@ namespace ApplicationDevelopment.Data.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Cart_Users_UserId",
                 table: "Cart");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Orders Detail_Book_BookId",
-                table: "Orders Detail");
 
             migrationBuilder.DropTable(
                 name: "Store");
@@ -63,16 +59,32 @@ namespace ApplicationDevelopment.Data.Migrations
                 table: "Carts",
                 newName: "IX_Carts_BookId");
 
-            migrationBuilder.AddColumn<string>(
+            migrationBuilder.AlterColumn<int>(
+                name: "BookId",
+                table: "Orders Detail",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.AddColumn<int>(
                 name: "Id",
                 table: "Book",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: 0)
+                .Annotation("SqlServer:Identity", "1, 1");
 
             migrationBuilder.AddColumn<int>(
                 name: "CategoryId",
                 table: "Book",
                 nullable: true);
+
+            migrationBuilder.AlterColumn<int>(
+                name: "BookId",
+                table: "Carts",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Book",
@@ -90,7 +102,7 @@ namespace ApplicationDevelopment.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<int>(nullable: false),
+                    CategoryName = table.Column<string>(nullable: true),
                     CreateAt = table.Column<DateTime>(nullable: false),
                     Status = table.Column<string>(nullable: true)
                 },
@@ -98,6 +110,11 @@ namespace ApplicationDevelopment.Data.Migrations
                 {
                     table.PrimaryKey("PK_Category", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders Detail_BookId",
+                table: "Orders Detail",
+                column: "BookId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Book_CategoryId",
@@ -158,6 +175,10 @@ namespace ApplicationDevelopment.Data.Migrations
             migrationBuilder.DropTable(
                 name: "Category");
 
+            migrationBuilder.DropIndex(
+                name: "IX_Orders Detail_BookId",
+                table: "Orders Detail");
+
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Book",
                 table: "Book");
@@ -187,6 +208,14 @@ namespace ApplicationDevelopment.Data.Migrations
                 table: "Cart",
                 newName: "IX_Cart_BookId");
 
+            migrationBuilder.AlterColumn<string>(
+                name: "BookId",
+                table: "Orders Detail",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldNullable: true);
+
             migrationBuilder.AddColumn<decimal>(
                 name: "Total",
                 table: "Orders",
@@ -212,6 +241,13 @@ namespace ApplicationDevelopment.Data.Migrations
                 table: "Book",
                 type: "int",
                 nullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "BookId",
+                table: "Cart",
+                type: "nvarchar(450)",
+                nullable: false,
+                oldClrType: typeof(int));
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Book",
@@ -265,14 +301,6 @@ namespace ApplicationDevelopment.Data.Migrations
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Orders Detail_Book_BookId",
-                table: "Orders Detail",
-                column: "BookId",
-                principalTable: "Book",
-                principalColumn: "Isbn",
-                onDelete: ReferentialAction.Restrict);
         }
     }
 }
