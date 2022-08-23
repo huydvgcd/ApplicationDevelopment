@@ -1,0 +1,21 @@
+﻿<h1> This is Customer Home Page</h1>
+
+@model IEnumerable<Book>
+
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-sm-4">
+                <div class="card" style="width: 18rem;">
+                    <img  src="~/images/@item.ProfilePicture" class="card-img-top" alt="">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">@item.Description</p>
+                        <a asp-route-id="@item.Id" asp-action="AddItemToOrder" asp-controller="Customer" class="btn btn-primary">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

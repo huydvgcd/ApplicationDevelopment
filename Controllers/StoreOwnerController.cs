@@ -10,7 +10,7 @@ namespace ApplicationDevelopment.Controllers
 {
     public class StoreOwnerController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        public ApplicationDbContext _context;
         public UserManager<ApplicationUser> _userManager;
 
         public StoreOwnerController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
@@ -18,6 +18,7 @@ namespace ApplicationDevelopment.Controllers
             _context = context;
             _userManager = userManager;
         }
+        
         
         [HttpGet]
         public async Task<IActionResult> IndexAsync(List<ApplicationUser> listCustomer)
@@ -83,11 +84,10 @@ namespace ApplicationDevelopment.Controllers
             return View(newCategory);
         }
 
-        // [HttpGet]
-        // public IActionResult ListCustomerOrder()
-        // {
-        //     return View();
-        // }
-        
+        [HttpGet]
+        public IActionResult ListCustomerOrder()
+        {
+            return View();
+        }
     }
 }

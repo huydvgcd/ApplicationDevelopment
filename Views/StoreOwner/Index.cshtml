@@ -10,7 +10,7 @@
 </form>
 <a class="btn-primary btn" asp-action="SendCategoryRequest" asp-controller="StoreOwner">Send Category Request</a>
 <a class="btn-primary btn" asp-action="Index" asp-controller="Book">CRUD Book</a>
-@* <a class="btn-primary btn" asp-action="ListCustomerOrder" asp-controller="StoreOwner">List Customer Orders</a> *@
+<a class="btn-primary btn" asp-action="ListCustomerOrder" asp-controller="StoreOwner">List Customer Orders</a>
 
 <table class="table">
     <thead>
@@ -27,7 +27,7 @@
 
     @foreach (var item in Model)
     {
-        <tr>
+        <tr> 
             <th scope="row"></th>
             <td>@item.Id</td>
             <td>@item.FullName</td>

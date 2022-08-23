@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using ApplicationDevelopment.Models;
+using ApplicationDevelopment.Utils;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ApplicationDevelopment.Areas.Identity.Pages.Account
 {
@@ -23,21 +25,24 @@ namespace ApplicationDevelopment.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _logger = logger;
             _emailSender = emailSender;
         }
-
+        public SelectList RoleSelectList { get; set; }
         [BindProperty]
         public InputModel Input { get; set; }
 
@@ -52,6 +57,17 @@ namespace ApplicationDevelopment.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
+
+            [Display(Name = "Full Name")]
+            [Required]
+            [StringLength(255, ErrorMessage = "You must input your Full Name")]
+            public string FullName { get; set; }
+
+            [Required]
+            [Display(Name = "Address")]
+            [StringLength(255, ErrorMessage = "Please input your Address")]
+            public string HomeAddress { get; set; }
+
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
@@ -63,21 +79,21 @@ namespace ApplicationDevelopment.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            [Display(Name = "Full Name")]
-           
-            public string FullName { get; set; }
-
-            [Display(Name = "Address")]
-            
-            public string HomeAddress { get; set; }
+            [Required]
+            public string Role { get; set; }
         }
 
-        
         public async Task OnGetAsync(string returnUrl = null)
         {
+            RoleSelectList = new SelectList(new List<string>
+          {
+            Role.ADMIN,
+            Role.STORE_OWNER,
+            Role.CUSTOMER
+          }
+        );
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -86,11 +102,18 @@ namespace ApplicationDevelopment.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email,HomeAddress = Input.HomeAddress, FullName = Input.FullName };
+                var user = new ApplicationUser
+                {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    HomeAddress = Input.HomeAddress,
+                    FullName = Input.FullName
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    IdentityResult roleresult = await _userManager.AddToRoleAsync(user, Input.Role);
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -118,6 +141,14 @@ namespace ApplicationDevelopment.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+
+            RoleSelectList = new SelectList(new List<string>
+          {
+            Role.ADMIN,
+            Role.STORE_OWNER,
+            Role.CUSTOMER
+          }
+      );
 
             // If we got this far, something failed, redisplay form
             return Page();
