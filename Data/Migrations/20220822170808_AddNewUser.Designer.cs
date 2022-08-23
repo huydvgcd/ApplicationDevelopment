@@ -4,14 +4,16 @@ using ApplicationDevelopment.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApplicationDevelopment.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220822170808_AddNewUser")]
+    partial class AddNewUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,111 +89,7 @@ namespace ApplicationDevelopment.Data.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("ApplicationDevelopment.Models.Book", b =>
-                {
-                    b.Property<string>("Isbn")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Author")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImgUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("StoreId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Isbn");
-
-                    b.HasIndex("StoreId");
-
-                    b.ToTable("Book");
-                });
-
-            modelBuilder.Entity("ApplicationDevelopment.Models.Cart", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("BookId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "BookId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("Cart");
-                });
-
-            modelBuilder.Entity("ApplicationDevelopment.Models.Orders", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("OrderTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("ApplicationDevelopment.Models.OrdersDetail", b =>
-                {
-                    b.Property<string>("BookId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("Orders Detail");
-                });
-
-            modelBuilder.Entity("ApplicationDevelopment.Models.Store", b =>
-                {
-                    b.Property<int>("StoreId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("StoreId");
-
-                    b.ToTable("Store");
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -218,7 +116,7 @@ namespace ApplicationDevelopment.Data.Migrations
                         .HasName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("Roles");
+                    b.ToTable("AspNetRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -242,7 +140,7 @@ namespace ApplicationDevelopment.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaims");
+                    b.ToTable("AspNetRoleClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -266,7 +164,7 @@ namespace ApplicationDevelopment.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserClaims");
+                    b.ToTable("AspNetUserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -290,7 +188,7 @@ namespace ApplicationDevelopment.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogins");
+                    b.ToTable("AspNetUserLogins");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -305,7 +203,7 @@ namespace ApplicationDevelopment.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("AspNetUserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -326,47 +224,7 @@ namespace ApplicationDevelopment.Data.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserTokens");
-                });
-
-            modelBuilder.Entity("ApplicationDevelopment.Models.Book", b =>
-                {
-                    b.HasOne("ApplicationDevelopment.Models.Store", "Store")
-                        .WithMany()
-                        .HasForeignKey("StoreId");
-                });
-
-            modelBuilder.Entity("ApplicationDevelopment.Models.Cart", b =>
-                {
-                    b.HasOne("ApplicationDevelopment.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ApplicationDevelopment.Models.ApplicationUser", "AppUser")
-                        .WithMany("Carts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ApplicationDevelopment.Models.Orders", b =>
-                {
-                    b.HasOne("ApplicationDevelopment.Models.ApplicationUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("ApplicationDevelopment.Models.OrdersDetail", b =>
-                {
-                    b.HasOne("ApplicationDevelopment.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId");
-
-                    b.HasOne("ApplicationDevelopment.Models.Orders", "Orders")
-                        .WithMany()
-                        .HasForeignKey("OrderId");
+                    b.ToTable("AspNetUserTokens");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

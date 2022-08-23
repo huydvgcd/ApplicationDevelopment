@@ -4,14 +4,16 @@ using ApplicationDevelopment.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApplicationDevelopment.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220823031637_addNewModel")]
+    partial class addNewModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,6 +45,9 @@ namespace ApplicationDevelopment.Data.Migrations
 
                     b.Property<string>("HomeAddress")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Isbn")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -78,6 +83,8 @@ namespace ApplicationDevelopment.Data.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Isbn");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -161,15 +168,13 @@ namespace ApplicationDevelopment.Data.Migrations
             modelBuilder.Entity("ApplicationDevelopment.Models.OrdersDetail", b =>
                 {
                     b.Property<string>("BookId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
-
-                    b.HasIndex("BookId");
 
                     b.HasIndex("OrderId");
 
@@ -329,6 +334,13 @@ namespace ApplicationDevelopment.Data.Migrations
                     b.ToTable("UserTokens");
                 });
 
+            modelBuilder.Entity("ApplicationDevelopment.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("ApplicationDevelopment.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("Isbn");
+                });
+
             modelBuilder.Entity("ApplicationDevelopment.Models.Book", b =>
                 {
                     b.HasOne("ApplicationDevelopment.Models.Store", "Store")
@@ -360,10 +372,6 @@ namespace ApplicationDevelopment.Data.Migrations
 
             modelBuilder.Entity("ApplicationDevelopment.Models.OrdersDetail", b =>
                 {
-                    b.HasOne("ApplicationDevelopment.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId");
-
                     b.HasOne("ApplicationDevelopment.Models.Orders", "Orders")
                         .WithMany()
                         .HasForeignKey("OrderId");

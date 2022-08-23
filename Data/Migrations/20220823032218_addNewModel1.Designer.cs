@@ -4,14 +4,16 @@ using ApplicationDevelopment.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApplicationDevelopment.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220823032218_addNewModel1")]
+    partial class addNewModel1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,15 +163,13 @@ namespace ApplicationDevelopment.Data.Migrations
             modelBuilder.Entity("ApplicationDevelopment.Models.OrdersDetail", b =>
                 {
                     b.Property<string>("BookId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
-
-                    b.HasIndex("BookId");
 
                     b.HasIndex("OrderId");
 
@@ -360,10 +360,6 @@ namespace ApplicationDevelopment.Data.Migrations
 
             modelBuilder.Entity("ApplicationDevelopment.Models.OrdersDetail", b =>
                 {
-                    b.HasOne("ApplicationDevelopment.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId");
-
                     b.HasOne("ApplicationDevelopment.Models.Orders", "Orders")
                         .WithMany()
                         .HasForeignKey("OrderId");
