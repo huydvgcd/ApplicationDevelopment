@@ -1,24 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
 
 namespace ApplicationDevelopment.Models
 {
-    [Table("Store")]
-    public class Store
+    [Table("Category")]
+    public class Category
     {
         [Key]
         [Required]
-        [Display(Name = "Store ID")]
-        public int StoreId { set; get; }
+        [Display(Name = "Category ID")]
+        public int Id { set; get; }
 
-        [Display(Name = "UserID")]
-        public int UserId { set; get; }
+        [Display(Name = "Name")]
+        public int CategoryName { set; get; }
 
         [Display(Name = "Address")]
-        public string Address { set; get; }
+        public DateTime CreateAt { set; get; }
 
-        //[Display(Name = "Slogan")]
-        //public string Slogan { set; get; }
+        [Display(Name = "Status")]
+        public string Status { set; get; }
     }
 }

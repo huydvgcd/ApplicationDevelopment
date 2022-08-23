@@ -40,10 +40,10 @@ namespace ApplicationDevelopment.Data
         }
 
         public DbSet<Book> Books { get; set; }
-        public DbSet<Store> Stores { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public DbSet<Orders> Orders { get; set; }
-        public DbSet<Cart> Cart { get; set; }
+        public DbSet<Cart> Carts { get; set; }
         public DbSet<OrdersDetail> OrdersDetails { get; set; }
 
 

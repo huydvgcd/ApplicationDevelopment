@@ -21,7 +21,6 @@ namespace ApplicationDevelopment.Models
         public DateTime OrderTime { set; get; }
 
 
-        [Display(Name = "Total")]
-        public Decimal Total { set; get; }
+       
     }
 }
