@@ -33,7 +33,7 @@ namespace ApplicationDevelopment.Controllers
             var userId = _userManager.GetUserId(HttpContext.User);
             List<Book> listBook = _context.Books.Include(b => b.Category).ToList();
 
-            var bookToBuy = _context.Books.FirstOrDefault(b => b.Id == id);
+            Book bookToBuy = _context.Books.FirstOrDefault(b => b.Id == id);
 
             Cart itemExitInCart = _context.Carts.FirstOrDefault(c => c.UserId == userId && c.BookId == id);
 
@@ -59,9 +59,64 @@ namespace ApplicationDevelopment.Controllers
                 itemExitInCart.Total += bookToBuy.Price;
                 _context.Carts.Update(itemExitInCart);
                 _context.SaveChanges();
-            }
-
+            } 
             return View(nameof(Index), listBook);
         }
+
+        public IActionResult Cart()
+        {
+            var userId = _userManager.GetUserId(HttpContext.User);
+            // List<Cart> listItemInCart = _context.Carts.Include(c => c.UserId == userId).ToList();
+
+            var listItemInCart = (from item in _context.Carts where item.UserId == userId select item).Include(b => b.Book).ToList(); 
+            
+            return View(listItemInCart); 
+        }
+
+        [HttpGet]
+        public IActionResult MinusItem(int id)
+        {
+            var userId = _userManager.GetUserId(HttpContext.User);
+            
+
+            Cart itemToMinus = _context.Carts.FirstOrDefault(c => c.UserId == userId && c.BookId == id);
+            Book bookToMinus = _context.Books.FirstOrDefault(b => b.Id == id);
+
+            itemToMinus.Quantity -= 1;
+            itemToMinus.Total -= bookToMinus.Price;
+
+            _context.Update(itemToMinus);
+            _context.SaveChanges(); 
+            
+            var listItemInCart = (from item in _context.Carts where item.UserId == userId select item).Include(b => b.Book).ToList(); 
+            return View(nameof(Cart), listItemInCart);
+        }
+        
+      
+
+        public IActionResult IncreaseItem(int id)
+        {
+            var userId = _userManager.GetUserId(HttpContext.User);
+            
+
+            Cart itemToIncrease = _context.Carts.FirstOrDefault(c => c.UserId == userId && c.BookId == id);
+            Book bookToMinus = _context.Books.FirstOrDefault(b => b.Id == id);
+
+            itemToIncrease.Quantity += 1;
+            itemToIncrease.Total += bookToMinus.Price;
+
+            _context.Update(itemToIncrease);
+            _context.SaveChanges(); 
+            
+            var listItemInCart = (from item in _context.Carts where item.UserId == userId select item).Include(b => b.Book).ToList();
+            return View(nameof(Cart), listItemInCart); 
+        }
+
+        public IActionResult CreateOrder()
+        {
+            return View(nameof(Cart)); 
+        }
     }
+    
+    
 }
