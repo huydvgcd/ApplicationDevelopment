@@ -12,7 +12,10 @@
                     <div class="card-body">
                         <h5 class="card-title">@item.Title</h5>
                         <p class="card-text">@item.Description</p>
-                        <a asp-route-id="@item.Id" asp-action="AddItemToOrder" asp-controller="Customer" class="btn btn-primary">Add to Cart</a>
+                        <p class="card-text">
+                            <strong>Price: @item.Price </strong>
+                        </p>
+                        <a asp-route-id="@item.Id" asp-action="AddItemToCart" asp-controller="Customer" class="btn btn-primary">Add to Cart</a>
                     </div>
                 </div>
             </div>

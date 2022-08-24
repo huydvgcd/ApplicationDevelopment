@@ -16,5 +16,9 @@ namespace ApplicationDevelopment.Models
 
         [ForeignKey("BookId")]
         public Book Book { set; get; }
+        
+        public int Quantity { set; get; }
+        
+        public int Total { set; get; } 
     }
 }
