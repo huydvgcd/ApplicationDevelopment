@@ -28,17 +28,18 @@ namespace ApplicationDevelopment.Data
                     entityType.SetTableName(tableName.Substring(6));
                 }
             }
-
-            modelBuilder.Entity<OrdersDetail>(entity => {
-                entity.HasNoKey();
-            });
+            
 
             modelBuilder.Entity<Cart>().HasKey(cart => new { cart.UserId, cart.BookId });
+            modelBuilder.Entity<OrdersDetail>().HasKey(ordersDetail => new {  ordersDetail.OrderId, ordersDetail.BookId});
 
             // modelBuilder.Entity<Cart>().HasKey(cart => cart.Uid);
             modelBuilder.Entity<Cart>().HasOne<ApplicationUser>(cart => cart.AppUser)
                                         .WithMany(app => app.Carts)
                                         .HasForeignKey(cart => cart.UserId);
+            
+            
+
 
         }
         

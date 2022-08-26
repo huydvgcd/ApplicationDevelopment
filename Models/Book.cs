@@ -36,7 +36,8 @@ namespace ApplicationDevelopment.Models
         public string Description { set; get; }
 
         [Display(Name = "Book Quantity")]
-        public string Quantity { set; get; }
+        [Range(1, 100)]
+        public int Quantity { set; get; }
 
         [Required(ErrorMessage = "Please choose profile image")]
         [Display(Name = "Profile Picture")]

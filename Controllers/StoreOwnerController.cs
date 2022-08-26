@@ -1,17 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ApplicationDevelopment.Data;
 using ApplicationDevelopment.Models;
 using ApplicationDevelopment.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationDevelopment.Controllers
 {
     public class StoreOwnerController : Controller
     {
-        public ApplicationDbContext _context;
-        public UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public StoreOwnerController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
@@ -47,15 +50,16 @@ namespace ApplicationDevelopment.Controllers
         [NonAction]
         public async Task<IActionResult> SearchCustomerAsync(string searchString)
         {
-            List<ApplicationUser> listCustomer = new List<ApplicationUser>();
-            if (searchString == null)
-            {
-                return NotFound();
-            }
-            var customer = await _userManager.FindByEmailAsync(searchString);
-            listCustomer.Add(customer);
+            var customer = await _userManager.GetUsersInRoleAsync(Role.CUSTOMER);
 
-            return View("Index", listCustomer);
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                var result = customer.Where(t => t.Email.Contains(searchString)).ToList();
+
+                return  View(nameof(Index), result); 
+            }
+
+            return View("Index");
         }
 
 
@@ -83,11 +87,24 @@ namespace ApplicationDevelopment.Controllers
 
             return View(newCategory);
         }
+        
+        
 
         [HttpGet]
-        public IActionResult ListCustomerOrder()
+        public IActionResult ListCustomerOrder() 
         {
-            return View();
+            
+            // var listOrder = _context.OrdersDetails.Include(b => b.Orders).ThenInclude(u => u.AppUser).ToList();
+
+            var order = _context.Orders.Include(u => u.AppUser).Include(b => b.OrdersDetails).ToList(); 
+            return View(order);
+        }
+        public IActionResult OrderCustomerDetail(string id, int orderId)
+        {
+            var orderDetail = (from o in _context.OrdersDetails where o.OrderId == orderId select o)
+                .Include(b => b.Book).ThenInclude(c => c.Category).ToList();
+            
+            return View(orderDetail);
         }
     }
 }
