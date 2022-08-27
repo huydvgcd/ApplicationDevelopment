@@ -104,22 +104,28 @@ namespace ApplicationDevelopment.Controllers
             var listCategories = _context.Categories.ToList();
             ViewData["listCategories"] = listCategories;
 
-            Book book = _context.Books.Include(b => b.Category).FirstOrDefault(b => b.Id == id);
-            return View(book);
+            Book bookToUpdate = _context.Books.Include(b => b.Category).FirstOrDefault(b => b.Id == id);
+            
+            var model = new BookViewModel()
+            {
+                book = bookToUpdate
+            };
+            return View(model);
         }
 
         [HttpPost]
-        public IActionResult Update(Book book)
+        public IActionResult Update(BookViewModel model)
         {
-            var bookUpdate = _context.Books.Include(b => b.Category).FirstOrDefault(b => b.Id == book.Id);
-
-            bookUpdate.Author = book.Author;
-            bookUpdate.Price = book.Price;
-            bookUpdate.Title = book.Title;
-            bookUpdate.Description = book.Description;
-            bookUpdate.Quantity = book.Quantity;
-            bookUpdate.CategoryId = book.CategoryId;
-                
+            string uniqueFileName = UploadedFile(model);
+            var bookUpdate = _context.Books.Include(b => b.Category).FirstOrDefault(b => b.Id == model.book.Id);
+            
+            bookUpdate.Author = model.book.Author;
+            bookUpdate.Price = model.book.Price;    
+            bookUpdate.Title = model.book.Title;
+            bookUpdate.Description = model.book.Description;
+            bookUpdate.Quantity = model.book.Quantity;
+            bookUpdate.CategoryId = model.book.CategoryId;
+            bookUpdate.ProfilePicture = uniqueFileName;    
 
 
 

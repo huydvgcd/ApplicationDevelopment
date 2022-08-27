@@ -99,7 +99,7 @@ namespace ApplicationDevelopment.Controllers
             var order = _context.Orders.Include(u => u.AppUser).Include(b => b.OrdersDetails).ToList(); 
             return View(order);
         }
-        public IActionResult OrderCustomerDetail(string id, int orderId)
+        public IActionResult OrderCustomerDetail(int orderId)
         {
             var orderDetail = (from o in _context.OrdersDetails where o.OrderId == orderId select o)
                 .Include(b => b.Book).ThenInclude(c => c.Category).ToList();

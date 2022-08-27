@@ -1,7 +1,7 @@
-﻿@model Book
+﻿@model ApplicationDevelopment.ViewModels.BookViewModel
 
-@{ 
-    var listCategory = ViewData["listCategories"] as List<Category>; 
+@{
+    var listCategory = ViewData["listCategories"] as List<Category>;
 }
 
 <script src="https://kit.fontawesome.com/a775ea28da.js" crossorigin="anonymous"></script>
@@ -50,57 +50,58 @@
 </style>
 
 <div class="body-container">
-    @* <div class="side-bar"> *@
-    @*     <ul class="list-group"> *@
-    @*         <li class="list-group-item"><i class="fa-solid fa-book"></i><a id="book-management" asp-controller="Book" asp-action="Index">Book Management</a></li> *@
-    @*         <li class="list-group-item"><i class="fa-solid fa-list"></i><a id="category-request" asp-controller="Categories" asp-action="Index">Category Request</a></li> *@
-    @*         <li class="list-group-item"><i class="fa-solid fa-clipboard-user"></i>Record Management</li> *@
-    @*     </ul> *@
-    @* </div> *@
- 
     <div class="display-container">
-        <form asp-controller="Book" asp-action="Update" method="post">
-            <input asp-for="@Model.Id" type="hidden" value="@Model.Id" />
-
+        <form enctype="multipart/form-data" asp-controller="Book" asp-action="Update" method="post">
+        <input asp-for="@Model.book.Id" type="hidden" value="@Model.book.Id" />
             <div class="form-group">
-                <label>Name Of Book</label>
-                <input asp-for="Title" class="form-control" placeholder="Title of Book" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label>Author</label>
-                <input asp-for="Author" class="form-control" placeholder="Author" />
-                <span asp-validation-for="Author" class="text-danger"></span>
-
-            </div>
-            <div class="form-group">
-                <label>Price</label>
-                <input asp-for="Price" class="form-control" placeholder="Price" type="number" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-
+                <label asp-for="@Model.book.Title" class="control-label"></label>
+                <input asp-for="@Model.book.Title" class="form-control" placeholder="Name Of Book"/>
+                <span asp-validation-for="@Model.book.Title" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label>Quantity</label>
-                <input asp-for="Quantity" class="form-control" placeholder="Quantity" type="number" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
+                <label asp-for="@Model.book.Price" class="control-label"></label>
+                <input asp-for="@Model.book.Price" class="form-control" placeholder="Name Of Book"/>
+                <span asp-validation-for="@Model.book.Price" class="text-danger"></span>
+            </div>
 
-            </div>
             <div class="form-group">
-                <label>Description of Book</label>
-                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <label asp-for="@Model.book.Author" class="control-label"></label>
+                <input asp-for="@Model.book.Author" class="form-control" placeholder="Name Of Book"/>
+                <span asp-validation-for="@Model.book.Author" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group">
-                <label asp-for="@Model.Category" class="control-label"></label>
-                <select asp-for="@Model.CategoryId"
+                <label asp-for="@Model.book.Description" class="control-label"></label>
+                <input asp-for="@Model.book.Description" class="form-control" placeholder="Name Of Book"/>
+                <span asp-validation-for="@Model.book.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@Model.book.Quantity" class="control-label"></label>
+                <input asp-for="@Model.book.Quantity" class="form-control" placeholder="Quantity Of Book"/>
+                <span asp-validation-for="@Model.book.Quantity" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@Model.book.Category" class="control-label"></label>
+                <select asp-for="@Model.book.CategoryId"
                         asp-items="@(new SelectList(listCategory, nameof(Category.Id), nameof(Category.CategoryName)))">
                     <option>Please select one</option>
                 </select>
             </div>
 
+            <div class="form-group">
+                <label asp-for="@Model.ProfileImage" class="control-label"></label>
+                <div class="custom-file">
+                    <input asp-for="@Model.ProfileImage" class="custom-file-input" id="customFile">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+                <span asp-validation-for="ProfileImage" class="text-danger"></span>
+            </div>
+
             <div class="btn-wrapper">
-                <button type="submit" class="btn btn-primary">Edit</button>
+                <button type="submit" class="btn btn-primary">Update</button>
             </div>
         </form>
     </div>
