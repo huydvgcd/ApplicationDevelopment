@@ -1,0 +1,10 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Unnamed" type="DotNetFolderPublish" factoryName="Publish to folder" singleton="false">
+    <riderPublish configuration="Release" platform="Any CPU" runtime="Portable" target_folder="$PROJECT_DIR$/bin/Release/netcoreapp3.1/publish" target_framework="netcoreapp3.1" uuid_high="-4769434075564129431" uuid_low="-5776493905252512955" />
+    <method v="2">
+      <option name="Build" default="false" projectName="ApplicationDevelopment" projectPath="file://$PROJECT_DIR$/ApplicationDevelopment.csproj" />
+      <option name="Build Solution" enabled="true" />
+      <option name="LaunchBrowser.Before.Run" />
+    </method>
+  </configuration>
+</component>
