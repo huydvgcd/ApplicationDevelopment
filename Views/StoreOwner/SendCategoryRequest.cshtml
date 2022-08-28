@@ -2,6 +2,15 @@
 
 <h1>Category Request</h1>
 
+@{
+    var message = TempData["Message"];
+
+    if (message != null)
+    {
+        <h4 class="alert alert-success" role="alert"> <strong>@TempData["Message"]</strong></h4>
+    }
+}
+<a class="btn btn-dark" asp-controller="StoreOwner" asp-action="Index">Go to Store Owner Home</a>
 
 <div class="col-md-12">
     <form asp-action="SendCategoryRequest" method="post">
@@ -17,4 +26,5 @@
             <input type="submit" value="Send Request" class="btn btn-primary" />
         </div>
     </form>
+    
 </div>

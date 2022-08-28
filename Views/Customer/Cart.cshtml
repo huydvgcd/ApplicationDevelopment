@@ -53,7 +53,7 @@
                 <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
                   <!-- Quantity -->
                   <div class="d-flex mb-4" style="max-width: 300px">
-                    <a class="btn btn-danger px-3 me-2" asp-action="MinusItem" asp-controller="Customer" asp-route-id="@item.BookId">-</a>
+                    <a class="btn btn-danger px-3 me-2" asp-action="MinusItem" asp-controller="Order" asp-route-id="@item.BookId">-</a>
 
                     <div class="form-outline">
                     
@@ -61,7 +61,7 @@
                       <span asp-validation-for="@item.Quantity" class="text-danger"></span>
                     </div>
 
-                    <a class="btn btn-primary px-3 me-2" asp-action="IncreaseItem" asp-controller="Customer" asp-route-id="@item.BookId">+</a>
+                    <a class="btn btn-primary px-3 me-2" asp-action="IncreaseItem" asp-controller="Order" asp-route-id="@item.BookId">+</a>
                   </div>
                   <!-- Quantity -->
 
@@ -74,9 +74,7 @@
               </div>
               <hr class="my-4" />
             }
-      
-
-            </div>
+          </div>
           </div>
         </div>
         
@@ -85,24 +83,36 @@
           <div class="card-header py-3">
             <h5 class="mb-0">Summary</h5>
           </div>
-          <div class="card-body">
-            <ul class="list-group list-group-flush">
+          @if (Model.Count == 0)
+          {
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                
+              </ul>
+              <a class="btn btn-primary px-3 me-2"  asp-action="Index" asp-controller="Customer">Go back to shopping</a>
+            </div>
+          }
+          else if (Model.Count > 0)
+          {
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
            
-              <li
-                class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-                <div>
-                  <strong>Total amount</strong>
-                  <strong>
-                    <p class="mb-0">(including VAT)</p>
-                  </strong>
-                </div>
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                  <div>
+                    <strong>Total amount</strong>
+                    <strong>
+                      <p class="mb-0">(including VAT)</p>
+                    </strong>
+                  </div>
                 
-                <span><strong>@total (VNĐ)</strong></span>
+                  <span><strong>@total (VNĐ)</strong></span>
                 
-              </li>
-            </ul>
-            <a class="btn btn-primary px-3 me-2"  asp-action="CreateOrder" asp-controller="Customer">Order</a>
-          </div>
+                </li>
+              </ul>
+              <a class="btn btn-primary px-3 me-2"  asp-action="CreateOrder" asp-controller="Order">Order</a>
+            </div>
+          }
         </div>
       </div>
     </div>

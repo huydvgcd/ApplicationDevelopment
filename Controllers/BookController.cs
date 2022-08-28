@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ApplicationDevelopment.Enums;
 
 namespace ApplicationDevelopment.Controllers
 {
@@ -51,14 +52,28 @@ namespace ApplicationDevelopment.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var listCategories = _context.Categories.ToList();
-            ViewData["listCategories"] = listCategories;
-            return View();
+            var getCategoryInDb = (from category in _context.Categories
+                where category.Status == CategoryStatus.Accepted
+                select category).ToList();
+            var model = new BookViewModel
+            {
+                listCategory = getCategoryInDb
+            };
+            return View(model);
         }
 
         [HttpPost]
         public IActionResult Create(BookViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                var getCategoryInDb = (from category in _context.Categories
+                    where category.Status == CategoryStatus.Accepted
+                    select category).ToList();
+                model.listCategory = getCategoryInDb; 
+                 
+                return View(model);
+            }
             string uniqueFileName = UploadedFile(model);
             Book newBook = new Book 
             {
@@ -101,21 +116,32 @@ namespace ApplicationDevelopment.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
-            var listCategories = _context.Categories.ToList();
-            ViewData["listCategories"] = listCategories;
+            var getCategoryInDb = (from category in _context.Categories
+                where category.Status == CategoryStatus.Accepted
+                select category).ToList();
+            var model = new BookViewModel
+            {
+                listCategory = getCategoryInDb
+            };
 
             Book bookToUpdate = _context.Books.Include(b => b.Category).FirstOrDefault(b => b.Id == id);
-            
-            var model = new BookViewModel()
-            {
-                book = bookToUpdate
-            };
+
+            model.book = bookToUpdate;
             return View(model);
         }
 
         [HttpPost]
         public IActionResult Update(BookViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                var getCategoryInDb = (from category in _context.Categories
+                    where category.Status == CategoryStatus.Accepted
+                    select category).ToList();
+                model.listCategory = getCategoryInDb; 
+                 
+                return View(model);
+            }
             string uniqueFileName = UploadedFile(model);
             var bookUpdate = _context.Books.Include(b => b.Category).FirstOrDefault(b => b.Id == model.book.Id);
             

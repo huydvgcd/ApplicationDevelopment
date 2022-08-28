@@ -84,6 +84,7 @@ namespace ApplicationDevelopment.Controllers
 
             _context.Add(newCategory);
             _context.SaveChanges();
+            TempData["Message"] = "Send Category Successfully";
 
             return View(newCategory);
         }

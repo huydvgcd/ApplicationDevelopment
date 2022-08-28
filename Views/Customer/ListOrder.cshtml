@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<Orders>
 
-<h1>List Customer order</h1>
+<h1>Customer order</h1>
 
-<a class="btn btn-dark" asp-controller="StoreOwner" asp-action="Index">Go to Store Owner Home</a>
+<a class="btn btn-dark" asp-controller="Customer" asp-action="Index">Go to Shopping</a>
 <table class="table">
     <thead>
     <tr>
@@ -26,8 +26,6 @@
                 <a class="btn btn-dark" asp-action="OrderCustomerDetail" asp-controller="StoreOwner" asp-route-orderId="@item.Id" asp-route-id="@item.AppUser.Id">Detail</a>
             </td>
         </tr>
-        
-        
     }
    
     </tbody>
