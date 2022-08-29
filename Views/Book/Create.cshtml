@@ -60,38 +60,38 @@
         <form enctype="multipart/form-data" asp-controller="Book" asp-action="Create" method="post">
             <div class="form-group">
                 <label asp-for="@Model.book.Title" class="control-label"></label>
-                <input asp-for="@Model.book.Title" class="form-control" placeholder="Name Of Book"/>
+                <input asp-for="@Model.book.Title" class="form-control" placeholder="Name Of Book" />
                 <span asp-validation-for="@Model.book.Title" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="@Model.book.Price" class="control-label"></label>
-                <input asp-for="@Model.book.Price" class="form-control" placeholder="Price Of Book"/>
+                <input asp-for="@Model.book.Price" class="form-control" placeholder="Price Of Book" />
                 <span asp-validation-for="@Model.book.Price" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="@Model.book.Author" class="control-label"></label>
-                <input asp-for="@Model.book.Author" class="form-control" placeholder="Author Of Book"/>
+                <input asp-for="@Model.book.Author" class="form-control" placeholder="Author Of Book" />
                 <span asp-validation-for="@Model.book.Author" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="@Model.book.Description" class="control-label"></label>
-                <input asp-for="@Model.book.Description" class="form-control" placeholder="Description Of Book"/>
-               <span asp-validation-for="@Model.book.Description" class="text-danger"></span>
+                <input asp-for="@Model.book.Description" class="form-control" placeholder="Description Of Book" />
+                <span asp-validation-for="@Model.book.Description" class="text-danger"></span>
             </div>
-             
+
 
             <div class="form-group">
-               
+
                 <label asp-for="@Model.book.Quantity" class="control-label"></label>
-                <input asp-for="@Model.book.Quantity" class="form-control" placeholder="Quantity Of Book"/>
+                <input asp-for="@Model.book.Quantity" class="form-control" placeholder="Quantity Of Book" />
                 <span asp-validation-for="@Model.book.Quantity" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-            <span asp-validation-for="@Model.book.Category" class="text-danger"></span>
+                <span asp-validation-for="@Model.book.Category" class="text-danger"></span>
                 <label asp-for="@Model.book.Category" class="control-label"></label>
                 <select asp-for="@Model.book.CategoryId"
                         asp-items="@(new SelectList(@Model.listCategory, nameof(Category.Id), nameof(Category.CategoryName)))">
@@ -99,13 +99,15 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label asp-for="@Model.ProfileImage" class="control-label"></label>
-                <div class="custom-file">
-                    <input asp-for="@Model.ProfileImage" class="custom-file-input" id="customFile">
-                    <label class="custom-file-label" for="customFile">Choose file</label>
-                </div>
-                <span asp-validation-for="ProfileImage" class="text-danger"></span>
+            <div class="form-group h5">
+                <dl>
+                    <dt>
+                        <label asp-for="@Model.ProfileImage">Book Cover</label>
+                    </dt>
+                    <dd>
+                        <input asp-for="@Model.ProfileImage" type="file">
+                    </dd>
+                </dl>
             </div>
 
             <div class="btn-wrapper">
