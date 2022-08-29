@@ -39,9 +39,9 @@ namespace ApplicationDevelopment.Models
         [Range(1, 100)]
         [Required(ErrorMessage = " Book quantity can not be null")]
         public int Quantity { set; get; }
+
         
-        [Display(Name = "Profile Picture")]
-        public string ProfilePicture { get; set; }
+        public byte[] ProfilePicture { get; set; }
 
     }
 }

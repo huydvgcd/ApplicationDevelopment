@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ApplicationDevelopment.Enums;
+using System.Threading.Tasks;
 
 namespace ApplicationDevelopment.Controllers
 {
@@ -18,29 +19,29 @@ namespace ApplicationDevelopment.Controllers
     {
         private readonly ApplicationDbContext _context;
         public IFormFile ProfileImage { get; set; }
-        private readonly IWebHostEnvironment webHostEnvironment;
+       
 
-        public BookController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public BookController(ApplicationDbContext context)
         {
             _context = context;
-            this.webHostEnvironment = webHostEnvironment;
+            
         }
 
-        private string UploadedFile(BookViewModel model)
-        {
-            string uniqueFileName = null;
-            if (model.ProfileImage != null)
-            {
-                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ProfileImage.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    model.ProfileImage.CopyTo(fileStream);
-                }
-            }
-            return uniqueFileName;
-        }
+        //private string UploadedFile(BookViewModel model)
+        //{
+        //    string uniqueFileName = null;
+        //    if (model.ProfileImage != null)
+        //    {
+        //        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+        //        uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ProfileImage.FileName;
+        //        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            model.ProfileImage.CopyTo(fileStream);
+        //        }
+        //    }
+        //    return uniqueFileName;
+        //}
 
         [HttpGet]
         public IActionResult Index()
@@ -63,31 +64,40 @@ namespace ApplicationDevelopment.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(BookViewModel model)
+        public async Task<IActionResult> CreateAsync(BookViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                var getCategoryInDb = (from category in _context.Categories
-                    where category.Status == CategoryStatus.Accepted
-                    select category).ToList();
-                model.listCategory = getCategoryInDb; 
-                 
+                model = new BookViewModel
+                {
+                    listCategory = _context.Categories
+                    .Where(c => c.Status == Enums.CategoryStatus.Accepted)
+                    .ToList()
+                };
                 return View(model);
             }
-            string uniqueFileName = UploadedFile(model);
-            Book newBook = new Book 
-            {
-                Author = model.book.Author,
-                Price = model.book.Price,
-                Title = model.book.Title,
-                Description = model.book.Description,
-                Quantity = model.book.Quantity,
-                CategoryId = model.book.CategoryId,
-                ProfilePicture = uniqueFileName
-            };
 
-            _context.Books.Add(newBook);
-            _context.SaveChanges();
+            using (var memoryStream = new MemoryStream())
+            {
+                await model.ProfileImage.CopyToAsync(memoryStream);
+
+                var newBook = new Book
+                {
+                    Author = model.book.Author,
+                    Price = model.book.Price,
+                    Title = model.book.Title,
+                    Description = model.book.Description,
+                    Quantity = model.book.Quantity,
+                    CategoryId = model.book.CategoryId,
+                    ProfilePicture = memoryStream.ToArray()
+                };
+
+                _context.Books.Add(newBook);
+                await _context.SaveChangesAsync();
+
+            }
+           
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -110,6 +120,16 @@ namespace ApplicationDevelopment.Controllers
         public IActionResult Detail(int id)
         {
             Book book = _context.Books.Include(b => b.Category).FirstOrDefault(b => b.Id == id);
+          
+
+            //var bookInDb = _context.Books.Include(t => t.Category)
+            //                .SingleOrDefault(t => t.Id == id);
+            //if (bookInDb is null)
+            //{
+            //    return NotFound();
+            //}
+
+            ViewBag.ImageData = ConvertByteArrayToStringBase64(book.ProfilePicture);
             return View(book);
         }
 
@@ -127,38 +147,60 @@ namespace ApplicationDevelopment.Controllers
             Book bookToUpdate = _context.Books.Include(b => b.Category).FirstOrDefault(b => b.Id == id);
 
             model.book = bookToUpdate;
+
+            ViewBag.ImageData = ConvertByteArrayToStringBase64(bookToUpdate.ProfilePicture);
+
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult Update(BookViewModel model)
+        public async Task<IActionResult> UpdateAsync(BookViewModel model)
         {
+            var bookUpdate = _context.Books.Include(b => b.Category).FirstOrDefault(b => b.Id == model.book.Id);
             if (!ModelState.IsValid)
             {
                 var getCategoryInDb = (from category in _context.Categories
                     where category.Status == CategoryStatus.Accepted
                     select category).ToList();
-                model.listCategory = getCategoryInDb; 
-                 
+                model.listCategory = getCategoryInDb;
+
+                ViewBag.ImageData = ConvertByteArrayToStringBase64(bookUpdate.ProfilePicture);
                 return View(model);
             }
-            string uniqueFileName = UploadedFile(model);
-            var bookUpdate = _context.Books.Include(b => b.Category).FirstOrDefault(b => b.Id == model.book.Id);
+          
             
-            bookUpdate.Author = model.book.Author;
-            bookUpdate.Price = model.book.Price;    
-            bookUpdate.Title = model.book.Title;
-            bookUpdate.Description = model.book.Description;
-            bookUpdate.Quantity = model.book.Quantity;
-            bookUpdate.CategoryId = model.book.CategoryId;
-            bookUpdate.ProfilePicture = uniqueFileName;    
 
+                bookUpdate.Author = model.book.Author;
+                bookUpdate.Price = model.book.Price;
+                bookUpdate.Title = model.book.Title;
+                bookUpdate.Description = model.book.Description;
+                bookUpdate.Quantity = model.book.Quantity;
+                bookUpdate.CategoryId = model.book.CategoryId;
 
+            if (model.ProfileImage != null)
+            {
+                using (var memoryStream = new MemoryStream())
 
-            _context.Books.Update(bookUpdate);
-            _context.SaveChanges();
+                {
+                    await model.ProfileImage.CopyToAsync(memoryStream);
+
+                    if (memoryStream != null)
+                        bookUpdate.ProfilePicture = memoryStream.ToArray();
+                }
+
+            }
+            await _context.SaveChangesAsync();
+          
 
             return RedirectToAction("Index");
+        }
+
+        [NonAction]
+        private string ConvertByteArrayToStringBase64(byte[] imageArray)
+        {
+            string imageBase64Data = Convert.ToBase64String(imageArray);
+
+            return string.Format("data:image/jpg;base64, {0}", imageBase64Data);
         }
     }
 }
